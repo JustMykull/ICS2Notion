@@ -42,12 +42,14 @@ def getEventsFromICS():
     ASSIGNMENT_KEYWORDS = {
         "assignment", "hw", "homework", "quiz",
         "exam", "test", "midterm", "final",
-        "lab", "project", "paper", "ps"
+        "lab", "project", "paper", "ps", "submit", "reflection",
+        "presentation", "speech"
     }
 
     DESCRIPTION_KEYWORDS = {
         "submit", "due", "upload", "gradescope",
-        "brightspace", "turn in"
+        "brightspace", "turn in", "respond", "reflection",
+        "presentation", "speech"
     }
 
     eastern = pytz.timezone("America/New_York")
