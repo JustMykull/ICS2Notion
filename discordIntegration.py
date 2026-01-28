@@ -10,7 +10,7 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 
 timeNow = datetime.now()
-Timezone = "US/Eastern"
+Timezone = sharedVars.getConfig("TIMEZONE")
 
 logFile = "discordLogs.log"
 

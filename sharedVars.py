@@ -16,6 +16,9 @@ def getConfig(configRequest : str):
     
     elif configRequest == "DISCORDBOT_TOKEN":
         return config["DISCORD"]["DISCORDBOT_TOKEN"]
+    
+    elif configRequest == "TIMEZONE":
+        return config["TIMEZONE"]["TIMEZONE"]
 
 ASSIGNEMTNAMES = []
 COURSECODE = []
