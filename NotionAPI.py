@@ -1,8 +1,9 @@
 from notion_client import Client
 import json
+import sharedVars
 
-client = Client(auth="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")
-dbID = "25a33e98aa5881d7a875f3813844bb2e"
+client = Client(auth=sharedVars.getConfig("NOTIONTOKEN"))
+dbID = sharedVars.getConfig("DATABASEID")
 
 file_path = "pages.json"
 

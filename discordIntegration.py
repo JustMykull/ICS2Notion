@@ -1,9 +1,10 @@
 import discord 
 import asyncio
+import sharedVars
 from datetime import datetime
 import pytz
 
-TOKEN  = "OTQxMTU0Mzg1NjEyOTIyOTEy.GAetZo.tUYyJIQD4giX-qJurPq8cqIc_C1RFtfwq3IHe0"
+TOKEN = sharedVars.getConfig("DISCORDBOT_TOKEN")
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)

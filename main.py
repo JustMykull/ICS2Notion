@@ -11,7 +11,7 @@ import discordIntegration
 import NotionAPI
 from ics import Calendar
 
-ICS_URL = "https://mycourses.stonybrook.edu/d2l/le/calendar/feed/user/feed.ics?token=anpjng9k1dpuu4wdd015e"
+ICS_URL = sharedVars.getConfig("ICS_URL")
 
 def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text or "").strip().lower()
