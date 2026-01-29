@@ -7,3 +7,4 @@ How to use:
 
 Optional Automation:
 Set up a cron job on a server to run the program, say, once or twice a day, to stay up to date with your assignments.
+Also included is an option to link to a Discord bot for reminder purposes (I needed a way to send notifications that was free). (WIP)
