@@ -17,10 +17,6 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text or "").strip().lower()
 
 
-def make_key(event_id, name, deadline):
-    return (normalize(event_id), normalize(name), normalize(deadline))
-
-
 def to_eastern(utc_str: str) -> str:
     if not utc_str:
         return ""
@@ -59,7 +55,7 @@ def getEventsFromICS():
         title = (event.name or "").lower()
         desc = (event.description or "").lower()
 
-        #assignment title filter
+        #Assignment title filter
         score = 0
         if any(k in title for k in ASSIGNMENT_KEYWORDS):
             score += 2
@@ -72,25 +68,25 @@ def getEventsFromICS():
             if duration.total_seconds() > 2 * 60 * 60:
                 score += 1
 
-        #description signal
+        #Description signal
         if any(k in desc for k in DESCRIPTION_KEYWORDS):
             score += 1
 
         if score < 2:
             continue
 
-        #deadline extraction
+        #Deadline extraction
         if not event.begin:
             continue
 
         deadline_utc = event.begin.astimezone(pytz.utc)
         deadline_eastern = deadline_utc.astimezone(eastern)
 
-        #skip past events
+        #Skip past events
         if deadline_eastern < now:
             continue
 
-        #course code extraction
+        #Course code extraction
         course_code = extract_course_code(
             event.name,
             event.description,
@@ -131,48 +127,39 @@ def EventsToNotion():
         #D2L ICS instead of Google Calendar
         getEventsFromICS()
 
-        existing_keys = set()
+        existing_event_ids = set()
+
+        #Loads existing assignments in Notion
         for assignment in NotionAPI.getAssignments(NotionAPI.dbID):
-            event_id = ""
             if assignment["properties"]["EventID"]["rich_text"]:
-                event_id = assignment["properties"]["EventID"]["rich_text"][0]["text"]["content"]
+                eventid = assignment["properties"]["EventID"]["rich_text"][0]["text"]["content"]
+                existing_event_ids.add(normalize(eventid))
 
-            name = ""
-            if assignment["properties"]["Assignment Name"]["title"]:
-                name = assignment["properties"]["Assignment Name"]["title"][0]["text"]["content"]
-
-            deadline = ""
-            if assignment["properties"]["Deadline"]["date"]:
-                deadline = to_eastern(assignment["properties"]["Deadline"]["date"]["start"])
-
-            existing_keys.add("".join(make_key(event_id, name, deadline)))
-
+        #New events loading and removing of already existing ones.
         for event in sharedVars.EVENTS[:]:
             event_id = event.get("EventID", "")
             name = event.get("Assignment Name", "")
             course_code = event.get("Course Code", "")
             deadline = event.get("Deadline", "")
 
-            key = "".join(make_key(event_id, name, deadline))
-            print("Key:", key)
+            deadline_eastern = to_eastern(deadline)
 
-            if key in existing_keys:
-                print(f"Skipping duplicate: {name}\n", file=l)
+            if normalize(event_id) in existing_event_ids:
+                print(f"Skipping duplicate (EventID): {name}\n", file=l)
                 sharedVars.EVENTS.remove(event)
                 continue
 
-            deadline_eastern = to_eastern(deadline)
 
             NotionAPI.createAssignment(
                 NotionAPI.dbID,
                 name,
                 course_code,
                 deadline_eastern,
-                normalize(key)
+                event_id
             )
 
             print(f"Created new assignment: {name}\n", file=l)
-            existing_keys.add(key)
+            existing_event_ids.add(normalize(event_id))
             sharedVars.EVENTS.remove(event)
 
         l.close()
