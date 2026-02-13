@@ -30,8 +30,9 @@ def to_eastern(utc_str: str) -> str:
 
 def getEventsFromICS():
     response = requests.get(ICS_URL)
+    print("ICS URL being used:", ICS_URL)
     response.raise_for_status()
-
+    
     cal = Calendar(response.text)
     events = []
 
@@ -39,13 +40,13 @@ def getEventsFromICS():
         "assignment", "hw", "homework", "quiz",
         "exam", "test", "midterm", "final",
         "lab", "project", "paper", "ps", "submit", "reflection",
-        "presentation", "speech"
+        "presentation", "speech", "submission", "due", "turn in", "respond"
     }
 
     DESCRIPTION_KEYWORDS = {
         "submit", "due", "upload", "gradescope",
         "brightspace", "turn in", "respond", "reflection",
-        "presentation", "speech"
+        "presentation", "speech", "submission", "due", "turn in", "respond"
     }
 
     eastern = pytz.timezone("America/New_York")
@@ -121,7 +122,7 @@ def extract_course_code(title: str = "", description: str = "", location: str = 
 
 
 def EventsToNotion():
-    l = open("discordLogs.log", "w")
+    l = open("discordLogs.log", "w", encoding="utf-8")
 
     try:
         #D2L ICS instead of Google Calendar
@@ -173,6 +174,5 @@ def EventsToNotion():
     except Exception as error:
         print(error)
         traceback.print_exc()
-
 
 EventsToNotion()
