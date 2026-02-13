@@ -3,3 +3,4 @@ discordLogs.log
 configs.ini
 test.py
 raw_ics_events.json
+configs.local.ini
